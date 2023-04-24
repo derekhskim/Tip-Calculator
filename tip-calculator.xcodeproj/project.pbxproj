@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		65152AB229F601CE00CE9AA0 /* UIView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65152AB129F601CE00CE9AA0 /* UIView+.swift */; };
+		65152AB429F6061700CE9AA0 /* AmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65152AB329F6061700CE9AA0 /* AmountView.swift */; };
 		652612D929F5C8660024EB4A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652612D829F5C8660024EB4A /* AppDelegate.swift */; };
 		652612DB29F5C8660024EB4A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652612DA29F5C8660024EB4A /* SceneDelegate.swift */; };
 		652612DD29F5C8660024EB4A /* CalculatorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652612DC29F5C8660024EB4A /* CalculatorVC.swift */; };
@@ -51,6 +52,7 @@
 
 /* Begin PBXFileReference section */
 		65152AB129F601CE00CE9AA0 /* UIView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+.swift"; sourceTree = "<group>"; };
+		65152AB329F6061700CE9AA0 /* AmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountView.swift; sourceTree = "<group>"; };
 		652612D529F5C8660024EB4A /* tip-calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "tip-calculator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		652612D829F5C8660024EB4A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		652612DA29F5C8660024EB4A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 				6526131B29F5CD160024EB4A /* BillInputView.swift */,
 				6526131D29F5CD260024EB4A /* TipInputView.swift */,
 				6526131F29F5CD350024EB4A /* SplitInputView.swift */,
+				65152AB329F6061700CE9AA0 /* AmountView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65152AB429F6061700CE9AA0 /* AmountView.swift in Sources */,
 				652612DD29F5C8660024EB4A /* CalculatorVC.swift in Sources */,
 				6526131829F5CC5F0024EB4A /* LogoView.swift in Sources */,
 				6526132329F5EDFA0024EB4A /* ThemeColor.swift in Sources */,
