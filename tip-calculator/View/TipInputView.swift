@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Combine
+import CombineCocoa
 
 class TipInputView: UIView {
     private let headerView: HeaderView = {
@@ -18,16 +20,28 @@ class TipInputView: UIView {
     
     private lazy var fifteenPercentTipButton: UIButton = {
         let button = buildTipButton(tip: .fifteenPercent)
+        button.tapPublisher.flatMap({
+            Just(TipChoice.fifteenPercent)
+        }).assign(to: \.value, on: tipSubject)
+            .store(in: &cancellables)
         return button
     }()
     
     private lazy var eighteenPercentTipButton: UIButton = {
         let button = buildTipButton(tip: .eighteenPercent)
+        button.tapPublisher.flatMap({
+            Just(TipChoice.eighteenPercent)
+        }).assign(to: \.value, on: tipSubject)
+            .store(in: &cancellables)
         return button
     }()
     
     private lazy var twentyPercentTipButton: UIButton = {
         let button = buildTipButton(tip: .twentyPercent)
+        button.tapPublisher.flatMap({
+            Just(TipChoice.twentyPercent)
+        }).assign(to: \.value, on: tipSubject)
+            .store(in: &cancellables)
         return button
     }()
     
@@ -38,6 +52,9 @@ class TipInputView: UIView {
         button.backgroundColor = ThemeColor.primary
         button.tintColor = .white
         button.addCornerRadius(radius: 8)
+        button.tapPublisher.sink { [weak self] _ in
+            self?.handleCustomTipButton()
+        }.store(in: &cancellables)
         return button
     }()
     
@@ -64,6 +81,12 @@ class TipInputView: UIView {
         return stackView
     }()
     
+    private let tipSubject = CurrentValueSubject<TipChoice, Never>(.none)
+    var valuePublisher: AnyPublisher<TipChoice, Never> {
+        return tipSubject.eraseToAnyPublisher()
+    }
+    private var cancellables = Set<AnyCancellable>()
+    
     init() {
         super.init(frame: .zero)
         layout()
@@ -86,6 +109,33 @@ class TipInputView: UIView {
             make.width.equalTo(68)
             make.centerY.equalTo(buttonHStackView.snp.centerY)
         }
+    }
+    
+    private func handleCustomTipButton() {
+        let alertController: UIAlertController = {
+            let controller = UIAlertController(
+                title: "Enter Custom Tip",
+                message: nil,
+                preferredStyle: .alert)
+            controller.addTextField { textField in
+                textField.placeholder = "Generous tip is appreciated!"
+                textField.keyboardType = .numberPad
+                textField.autocorrectionType = .no
+            }
+            let cancelAction = UIAlertAction(
+                title: "Cancel",
+                style: .cancel)
+            let okAction = UIAlertAction(
+                title: "OK",
+                style: .default) { [weak self] _ in
+                    guard let text = controller.textFields?.first?.text,
+                            let value = Int(text) else { return }
+                    self?.tipSubject.send(.Custom(value: value))
+                }
+            [okAction, cancelAction].forEach(controller.addAction(_:))
+            return controller
+        }()
+        parentViewController?.present(alertController, animated: true)
     }
     
     private func buildTipButton(tip: TipChoice) -> UIButton {
