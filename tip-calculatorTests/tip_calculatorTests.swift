@@ -48,6 +48,65 @@ final class tip_calculatorTests: XCTestCase {
         }.store(in: &cancellables)
     }
     
+    func testResultWithoutTipFor2Person() {
+        // Given
+        let bill: Double = 100.0
+        let tip: TipChoice = .none
+        let split: Int = 2
+        let input = buildInput(
+            bill: bill,
+            tip: tip,
+            split: split)
+        // When
+        let output = sut.transform(input: input)
+        // then
+        output.updateViewPublisher.sink { result in
+            XCTAssertEqual(result.amountPerPerson, 50)
+            XCTAssertEqual(result.totalBill, 100)
+            XCTAssertEqual(result.totalTip, 0)
+        }.store(in: &cancellables)
+    }
+    
+    func testResultWith20PercentTipFor2Person() {
+        // Given
+        let bill: Double = 100.0
+        let tip: TipChoice = .twentyPercent
+        let split: Int = 2
+        let input = buildInput(
+            bill: bill,
+            tip: tip,
+            split: split)
+        // When
+        let output = sut.transform(input: input)
+        
+        // then
+        output.updateViewPublisher.sink { result in
+            XCTAssertEqual(result.amountPerPerson, 60)
+            XCTAssertEqual(result.totalBill, 120)
+            XCTAssertEqual(result.totalTip, 20)
+        }.store(in: &cancellables)
+    }
+    
+    func testResultWithCustomTipFor4Person() {
+        // Given
+        let bill: Double = 200.0
+        let tip: TipChoice = .Custom(value: 40)
+        let split: Int = 4
+        let input = buildInput(
+            bill: bill,
+            tip: tip,
+            split: split)
+        // When
+        let output = sut.transform(input: input)
+        
+        // then
+        output.updateViewPublisher.sink { result in
+            XCTAssertEqual(result.amountPerPerson, 60)
+            XCTAssertEqual(result.totalBill, 240)
+            XCTAssertEqual(result.totalTip, 40)
+        }.store(in: &cancellables)
+    }
+    
     private func buildInput(bill: Double, tip: TipChoice, split: Int) -> CalculatorVM.Input {
         return .init(
             billPublisher: Just(bill).eraseToAnyPublisher(),
