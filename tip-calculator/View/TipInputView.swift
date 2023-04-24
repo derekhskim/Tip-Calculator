@@ -81,7 +81,7 @@ class TipInputView: UIView {
         return stackView
     }()
     
-    private let tipSubject = CurrentValueSubject<TipChoice, Never>(.none)
+    private let tipSubject: CurrentValueSubject<TipChoice, Never> = .init(.none)
     var valuePublisher: AnyPublisher<TipChoice, Never> {
         return tipSubject.eraseToAnyPublisher()
     }
@@ -90,6 +90,7 @@ class TipInputView: UIView {
     init() {
         super.init(frame: .zero)
         layout()
+        observe()
     }
     
     required init?(coder: NSCoder) {
@@ -129,13 +130,53 @@ class TipInputView: UIView {
                 title: "OK",
                 style: .default) { [weak self] _ in
                     guard let text = controller.textFields?.first?.text,
-                            let value = Int(text) else { return }
+                          let value = Int(text) else { return }
                     self?.tipSubject.send(.Custom(value: value))
                 }
             [okAction, cancelAction].forEach(controller.addAction(_:))
             return controller
         }()
         parentViewController?.present(alertController, animated: true)
+    }
+    
+    private func observe() {
+        tipSubject.sink { [unowned self] tip in
+            resetView()
+            switch tip {
+            case .none:
+                break
+            case .fifteenPercent:
+                fifteenPercentTipButton.backgroundColor = ThemeColor.secondary
+            case .eighteenPercent:
+                eighteenPercentTipButton.backgroundColor = ThemeColor.secondary
+            case .twentyPercent:
+                twentyPercentTipButton.backgroundColor = ThemeColor.secondary
+            case .Custom(let value):
+                customTipButton.backgroundColor = ThemeColor.secondary
+                let text = NSMutableAttributedString(
+                    string: "$\(value)",
+                    attributes: [
+                        .font: ThemeFont.bold(ofSize: 20)
+                    ])
+                text.addAttributes([
+                    .font: ThemeFont.bold(ofSize: 14)
+                ], range: NSMakeRange(0, 1))
+                customTipButton.setAttributedTitle(text, for: .normal)
+            }
+        }.store(in: &cancellables)
+    }
+    
+    private func resetView() {
+        [fifteenPercentTipButton,
+         eighteenPercentTipButton,
+         twentyPercentTipButton,
+         customTipButton].forEach{
+            $0.backgroundColor = ThemeColor.primary
+        }
+        let text = NSMutableAttributedString(
+            string: "Custom tip",
+            attributes: [.font: ThemeFont.bold(ofSize: 20)])
+        customTipButton.setAttributedTitle(text, for: .normal)
     }
     
     private func buildTipButton(tip: TipChoice) -> UIButton {
