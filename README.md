@@ -3,7 +3,7 @@ Tip Calculator using MVVM, Combine, Snapkit along with Snapshot/UI/Unit Tests
 
 ## 💻 Demo
 ### Main View
-![Splash Screen](./Media/main_view.png)
+<img src="./media/main_view.png" alt="Main View" width="295" height="640">
 
 ### Full Demo
-![Splash Screen](./Media/demo.gif)
+![Full Demo](./media/demo.gif)
